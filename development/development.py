@@ -11,14 +11,6 @@ def install_node():
         print(f"Error: Failed to install Node.js and npm: {e}")
         sys.exit(1)
 
-def install_pm2():
-    try:
-        subprocess.run(['npm', 'install', '-g', 'pm2'], check=True)
-        print("pm2 installed successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error: Failed to install pm2: {e}")
-        sys.exit(1)
-
 def install_nginx():
     try:
         subprocess.run(['sudo', 'apt', 'update'], check=True)
@@ -57,11 +49,8 @@ server {{
 
 def main():
     install_node()
-    install_pm2()
     install_nginx()
-    
-    port = input("Enter the port assigned to your Node.js application by pm2: ")
-    configure_nginx(port)
+    configure_nginx(5000)
 
 if __name__ == "__main__":
     main()
