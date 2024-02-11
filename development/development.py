@@ -1,11 +1,28 @@
 import subprocess
 
+def install_node():
+    try:
+        subprocess.run(['sudo', 'apt', 'update'], check=True)
+        subprocess.run(['sudo', 'apt', 'install', '-y', 'nodejs'], check=True)
+        subprocess.run(['sudo', 'apt', 'install', '-y', 'npm'], check=True)
+        print("Node.js and npm installed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Failed to install Node.js and npm: {e}")
+
 def install_pm2():
-    subprocess.run(['npm', 'install', '-g', 'pm2'], check=True)
+    try:
+        subprocess.run(['npm', 'install', '-g', 'pm2'], check=True)
+        print("pm2 installed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Failed to install pm2: {e}")
 
 def install_nginx():
-    subprocess.run(['sudo', 'apt', 'update'], check=True)
-    subprocess.run(['sudo', 'apt', 'install', 'nginx'], check=True)
+    try:
+        subprocess.run(['sudo', 'apt', 'update'], check=True)
+        subprocess.run(['sudo', 'apt', 'install', '-y', 'nginx'], check=True)
+        print("Nginx installed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: Failed to install Nginx: {e}")
 
 def configure_nginx(port):
     nginx_config = f"""
@@ -23,13 +40,18 @@ server {{
     }}
 }}
 """
-    with open('/etc/nginx/sites-available/default', 'w') as f:
-        f.write(nginx_config)
+    try:
+        with open('/etc/nginx/sites-available/default', 'w') as f:
+            f.write(nginx_config)
 
-    subprocess.run(['sudo', 'nginx', '-t'], check=True)
-    subprocess.run(['sudo', 'systemctl', 'reload', 'nginx'], check=True)
+        subprocess.run(['sudo', 'nginx', '-t'], check=True)
+        subprocess.run(['sudo', 'systemctl', 'reload', 'nginx'], check=True)
+        print("Nginx configured successfully.")
+    except Exception as e:
+        print(f"Error: Failed to configure Nginx: {e}")
 
 def main():
+    install_node()
     install_pm2()
     install_nginx()
     
