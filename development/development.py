@@ -28,15 +28,19 @@ def configure_nginx():
     }}
     """
     # Write configuration to file
-    with open("/etc/nginx/sites-available/default", "w") as f:
+    nginx_config_path = "/etc/nginx/sites-available/default"
+    with open(nginx_config_path, "w") as f:
         f.write(nginx_config)
+    print(f"Nginx configuration written to: {nginx_config_path}")
 
 def start_services():
     # Start Nginx and Node.js development server
     subprocess.run(["sudo", "systemctl", "start", "nginx"])
+    print("Nginx service started.")
 
 def main():
-    os.chdir("")  # Move to the application directory
+    application_directory = "/home/idsithija/Projects/wsl-nodejs"  # Update with the correct path
+    os.chdir(application_directory)  # Move to the application directory
     install_packages()
     configure_nginx()
     start_services()
