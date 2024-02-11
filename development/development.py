@@ -1,4 +1,5 @@
 import subprocess
+import sys
 
 def install_node():
     try:
@@ -8,6 +9,7 @@ def install_node():
         print("Node.js and npm installed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error: Failed to install Node.js and npm: {e}")
+        sys.exit(1)
 
 def install_pm2():
     try:
@@ -15,6 +17,7 @@ def install_pm2():
         print("pm2 installed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error: Failed to install pm2: {e}")
+        sys.exit(1)
 
 def install_nginx():
     try:
@@ -23,6 +26,7 @@ def install_nginx():
         print("Nginx installed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error: Failed to install Nginx: {e}")
+        sys.exit(1)
 
 def configure_nginx(port):
     nginx_config = f"""
@@ -49,6 +53,7 @@ server {{
         print("Nginx configured successfully.")
     except Exception as e:
         print(f"Error: Failed to configure Nginx: {e}")
+        sys.exit(1)
 
 def main():
     install_node()
