@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import os
 
 def install_node():
     try:
@@ -37,6 +38,9 @@ server {{
 }}
 """
     try:
+        # Grant write permissions to the directory
+        subprocess.run(['sudo', 'chmod', '+w', '/etc/nginx/sites-available/'])
+
         with open('/etc/nginx/sites-available/default', 'w') as f:
             f.write(nginx_config)
 
