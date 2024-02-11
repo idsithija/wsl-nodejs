@@ -1,49 +1,40 @@
-import os
 import subprocess
 
-def install_packages():
-    # Install necessary packages
-    subprocess.run(["sudo", "apt", "update"])
-    subprocess.run(["sudo", "apt", "install", "nginx", "nodejs", "npm"])
+def install_pm2():
+    subprocess.run(['npm', 'install', '-g', 'pm2'], check=True)
 
-def configure_nginx():
-    # Create Nginx configuration
+def install_nginx():
+    subprocess.run(['sudo', 'apt', 'update'], check=True)
+    subprocess.run(['sudo', 'apt', 'install', 'nginx'], check=True)
+
+def configure_nginx(port):
     nginx_config = f"""
-    server {{
-        listen 80;
-        server_name localhost;
+server {{
+    listen 80;
+    server_name localhost;
 
-        location / {{
-            proxy_pass http://127.0.0.1:3000;  # Adjust port if needed
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection 'upgrade';
-            proxy_set_header Host $host;
-            proxy_cache_bypass $http_upgrade;
-        }}
-
-        location /static {{
-            alias {os.path.abspath('wsl-nodejs/public')};  # Adjust path
-        }}
+    location / {{
+        proxy_pass http://127.0.0.1:{port};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
     }}
-    """
-    # Write configuration to file
-    nginx_config_path = "/etc/nginx/sites-available/default"
-    with open(nginx_config_path, "w") as f:
+}}
+"""
+    with open('/etc/nginx/sites-available/default', 'w') as f:
         f.write(nginx_config)
-    print(f"Nginx configuration written to: {nginx_config_path}")
 
-def start_services():
-    # Start Nginx and Node.js development server
-    subprocess.run(["sudo", "systemctl", "start", "nginx"])
-    print("Nginx service started.")
+    subprocess.run(['sudo', 'nginx', '-t'], check=True)
+    subprocess.run(['sudo', 'systemctl', 'reload', 'nginx'], check=True)
 
 def main():
-    application_directory = "/home/idsithija/Projects/wsl-nodejs"  # Update with the correct path
-    os.chdir(application_directory)  # Move to the application directory
-    install_packages()
-    configure_nginx()
-    start_services()
+    install_pm2()
+    install_nginx()
+    
+    port = input("Enter the port assigned to your Node.js application by pm2: ")
+    configure_nginx(port)
 
 if __name__ == "__main__":
     main()
